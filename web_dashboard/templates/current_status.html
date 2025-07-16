@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Water Surface Cleaning Robot - Status</title>
+    <style>        body {
+            font-family: Arial, sans-serif;
+            background: #e0f7fa;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            color: #00796b;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin: 0 0 30px 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }        .visualization-container {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            margin: 0 0 30px 0;
+        }
+        .animation-container {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 800px;
+        }
+        .controls-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 160px;
+        }
+        .control-btn {
+            background: #00796b;
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .control-btn:hover {
+            background: #00796b;
+            transform: scale(1.05);
+        }
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        .control-btn.center {
+            grid-column: 2;
+        }
+        .control-btn.left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        .control-btn.right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        .control-btn.down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        #robot-animation {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }        .back-button {
+            background: #0288d1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            margin: 0;
+        }
+        .back-button:hover {
+            background: #0277bd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Water Surface Cleaning Robot</h2>
+        <div class="visualization-container">
+            <div class="animation-container">
+                <img id="robot-animation" src="/get_animation_gif" alt="Robot Animation" 
+                     onerror="this.onerror=null;this.src='/static/placeholder.png';">
+            </div>
+            <div class="controls-container">
+                <button class="control-btn center" onclick="moveRobot('up')" style="grid-row: 1;">↑</button>
+                <button class="control-btn left" onclick="moveRobot('left')">←</button>
+                <button class="control-btn right" onclick="moveRobot('right')">→</button>
+                <button class="control-btn down" onclick="moveRobot('down')">↓</button>
+            </div>
+        </div>
+        <button onclick="window.location.href='/'" class="back-button">
+            Back to Dashboard
+        </button>
+    </div>
+
+    <script>
+        function moveRobot(direction) {
+            fetch('/move_robot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ direction: direction })
+            }).then(() => {
+                // Refresh the animation
+                document.getElementById('robot-animation').src = '/get_animation_gif?' + new Date().getTime();
+            });
+        }
+
+        window.onload = function() {
+            document.getElementById('robot-animation').src = '/get_animation_gif?' + new Date().getTime();
+        };
+    </script>
+</body>
+</html>
